@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Document</title>
+   <style type="text/css">
+     
+button{
+  margin: 1rem 0;
+  padding: 1rem;
+  font-weight: 400;
+   
+
+}
+button:hover{
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+ 
+
+
+main{
+  text-align: center;
+  display: flex;
+flex-direction: column;
+text-align: center;
+align-items: center;
+}
+
+ 
+   </style>
+</head>
+
+<body>
+   <div class=" App">
+
+    <main>
+        <img src="https://assets.hongkiat.com/uploads/metamask-alternatives/metamask.svg" alt="metamask-image" width="200px" height="200px">
+        <button class="enableEthereumButton" id="connectButton" disabled> </button>
+        <button class="btn btn-primary btn-lg btn-block mb-3" id="getAccounts">Show Connected Account </button>
+        <p class="info-text alert alert-secondary"> <span id="getAccountsResult"></span></p>
+    </main>
+
+   
+    <script  > 
+     
+
+
+const initialize = () => {
+    
+    const onboardButton = document.getElementById('connectButton');
+    const getAccountsButton = document.getElementById('getAccounts');
+    const getAccountsResult = document.getElementById('getAccountsResult');
+  
+   
+    const isMetaMaskInstalled = () => {
+      
+      const { ethereum } = window;
+      return Boolean(ethereum && ethereum.isMetaMask);
+    };
+   
+  
+    const onClickConnect = async () => {
+      try {
+   
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    const MetaMaskClientCheck = () => {
+    
+      if (!isMetaMaskInstalled()) {
+        
+        onboardButton.innerText = 'Click here to install MetaMask!';
+      
+        
+        onboardButton.disabled = false;
+      } else {
+       
+        onboardButton.innerText = 'Connect';
+      
+        onboardButton.onclick = onClickConnect;
+       
+        onboardButton.disabled = false;
+      }
+    };
+  
+     
+    getAccountsButton.addEventListener('click', async () => {
+       
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+     
+      getAccountsResult.innerHTML = accounts[0] || 'Not able to get accounts';
+      onboardButton.disabled = false;
+    });
+  
+    MetaMaskClientCheck();
+    window.ethereum.on('accountsChanged', (accounts) => {
+      
+      console.log("changed account address is:",accounts)
+      getAccountsResult.innerHTML = accounts
+  
+    });
+
+    window.ethereum.on('chainChanged', ( ) => {
+     
+      window.location.reload();
+    });
+ 
+    
+
+
+  };
+
+  
+  window.addEventListener('DOMContentLoaded', initialize);</script>
+
+   </div>
+ 
+</body>
+
+</html>
